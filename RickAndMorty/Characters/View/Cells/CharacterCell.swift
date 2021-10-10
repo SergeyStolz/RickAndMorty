@@ -40,14 +40,13 @@ class CharacterCell: UICollectionViewCell {
         return imageView
     }()
     
-    private lazy var nameCharacterlabel: UILabel = {
+    private lazy var nameCharacterLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .systemGray5
         label.textAlignment = .center
         label.font = UIFont(name: "Hoefler Text", size: 21)
         label.numberOfLines = 0
         label.layer.zPosition = 1
-        
         return label
     }()
     
@@ -83,14 +82,14 @@ class CharacterCell: UICollectionViewCell {
                 state = true
                 isFavoriteButton.isSelected = true
             }
-            delegate?.infoStateDelegate(name: nameCharacterlabel.text ?? "", state: state)
+            delegate?.infoStateDelegate(name: nameCharacterLabel.text ?? "", state: state)
         }
         
         let realmModel: FavoritesRealmModel!
         realmModel = FavoritesRealmModel()
         
         realmModel.id = characterId
-        realmModel.nameCharacter = nameCharacterlabel.text!
+        realmModel.nameCharacter = nameCharacterLabel.text!
         realmModel.statusCharacter = statusCharacter
         realmModel.speciesCharacter = speciesCharacter
         realmModel.typeCharacter = typeCharacter
@@ -134,7 +133,7 @@ class CharacterCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = .systemBackground
-        contentView.addSubview(nameCharacterlabel)
+        contentView.addSubview(nameCharacterLabel)
         contentView.addSubview(characterImageView)
         contentView.addSubview(isFavoriteButton)
         isFavoriteButton.addSubview(isFavoriteImageStar)
@@ -148,19 +147,22 @@ class CharacterCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         characterImageView.easy.layout( Left(), Right(), Top(), Bottom(38) )
-        nameCharacterlabel.easy.layout( Left(), Right(), Bottom(), Height(45) )
+        nameCharacterLabel.easy.layout( Left(), Right(), Bottom(), Height(45) )
         isFavoriteButton.easy.layout( Left(7), Top(7),  Width(40), Height(40) )
         isFavoriteImageStar.easy.layout( Edges() )
+    }
+    override func draw(_ rect: CGRect) {
+        nameCharacterLabel.roundCorners([.bottomLeft, .bottomRight], radius: 12)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        nameCharacterlabel.text = nil
+        nameCharacterLabel.text = nil
         characterImageView.image = nil
     }
     
     func fill(item: CharactersCellViewModel) {
-        nameCharacterlabel.text = item.name
+        nameCharacterLabel.text = item.name
         characterId = item.id
         statusCharacter = item.status
         speciesCharacter = item.species
@@ -188,5 +190,11 @@ class CharacterCell: UICollectionViewCell {
         }
     }
 }
-
-
+extension UIView {
+    func roundCorners(_ corners:UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        self.layer.mask = mask
+    }
+}

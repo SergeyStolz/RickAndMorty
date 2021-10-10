@@ -38,6 +38,7 @@ class FavoritesViewController: UIViewController, UITableViewDataSource, UITableV
         label.textColor = .white
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 6
+        label.numberOfLines = 0
         label.alpha = 0
         return label
     }()
